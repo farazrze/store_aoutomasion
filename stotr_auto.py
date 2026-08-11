@@ -93,7 +93,35 @@ class Store:
 
 
     def buy_product(self):
-        pass
+    pr_to_buy = input("enter name of product: ")
+    stock_to_buy = int(input("enter num of product you need: "))
+
+    store_cursor.execute(
+        "SELECT stock FROM products WHERE name=?",
+        (pr_to_buy,)
+    )
+
+    by = store_cursor.fetchone()
+
+    if by is None:
+        print("your product not found!")
+        return
+
+    new_stock = by[0] - stock_to_buy
+
+    if new_stock < 0:
+        print("not enough stock!")
+        return
+
+    store_cursor.execute(
+        "UPDATE products SET stock=? WHERE name=?",
+        (new_stock, pr_to_buy)
+    )
+
+    my_data.commit()
+
+    print("purchase successful!")
+
 
 
 class Customers:
